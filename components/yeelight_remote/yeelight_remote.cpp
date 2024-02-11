@@ -19,6 +19,7 @@ namespace esphome {
         }
 
         void YeelightRemote::handle_char_(uint8_t readByte) {
+            ESP_LOGD(TAG, " c: %02x", readByte);
             if (readByte == 0x5A && !inMessage) {
                 //New packet
                 inMessage = true;
@@ -40,6 +41,7 @@ namespace esphome {
                 } else if (inMessageCount == 7) {
                     ESP_LOGD(TAG, "Parity got of: %d", readByte);
                     ESP_LOGD(TAG, "Calculated parity of: %d", parity % 255);
+                    
                     if (parity % 255 == readByte) {
                         ESP_LOGD(TAG, "Parity is correct. Executing!");
                         switch (command) {
