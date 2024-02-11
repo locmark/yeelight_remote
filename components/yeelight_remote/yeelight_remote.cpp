@@ -19,7 +19,7 @@ namespace esphome {
         }
 
         void YeelightRemote::handle_char_(uint8_t readByte) {
-            // ESP_LOGD(TAG, " c: %02x", readByte);
+            ESP_LOGD(TAG, " c: %02x", readByte);
             // do not care if in message, its better to skip one than to stuck in an endless loop
             if (readByte == 0x5A/* && !inMessage*/) {
                 //New packet
