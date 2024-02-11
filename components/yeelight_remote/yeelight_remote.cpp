@@ -19,8 +19,9 @@ namespace esphome {
         }
 
         void YeelightRemote::handle_char_(uint8_t readByte) {
-            ESP_LOGD(TAG, " c: %02x", readByte);
-            if (readByte == 0x5A && !inMessage) {
+            // ESP_LOGD(TAG, " c: %02x", readByte);
+            // do not care if in message, its better to skip one than to stuck in an endless loop
+            if (readByte == 0x5A/* && !inMessage*/) {
                 //New packet
                 inMessage = true;
                 inMessageCount = 0;
@@ -28,22 +29,22 @@ namespace esphome {
             }
             if (inMessage) {
                 if (inMessageCount == 1) {
-                    ESP_LOGD(TAG, "Found message id: %d", readByte);
+                    // ESP_LOGD(TAG, "Found message id: %d", readByte);
                     if (previousMessageId == readByte) {
-                        ESP_LOGD(TAG, "This is the same as the previous message, so skipping this.");
+                        // ESP_LOGD(TAG, "This is the same as the previous message, so skipping this.");
                         inMessage = false;
                     }
                     previousMessageId = readByte;
 
                 } else if (inMessageCount == 3) {
-                    ESP_LOGD(TAG, "Found command: %d", readByte);
+                    // ESP_LOGD(TAG, "Found command: %d", readByte);
                     command = readByte;
                 } else if (inMessageCount == 7) {
-                    ESP_LOGD(TAG, "Parity got of: %d", readByte);
-                    ESP_LOGD(TAG, "Calculated parity of: %d", parity % 255);
+                    // ESP_LOGD(TAG, "Parity got of: %d", readByte);
+                    // ESP_LOGD(TAG, "Calculated parity of: %d", parity % 255);
                     
                     if (parity % 255 == readByte) {
-                        ESP_LOGD(TAG, "Parity is correct. Executing!");
+                        // ESP_LOGD(TAG, "Parity is correct. Executing!");
                         switch (command) {
                             case 0x01:
                                 this->handlePress();
